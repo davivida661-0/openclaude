@@ -25,126 +25,24 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
           cache: 'maven'
-          
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('nova-client/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
       
-      # Create temp directory for downloads
-      - name: Create temp directory
-        run: mkdir -p /tmp/maven-deps
-      
-      # Install LWJGL 2.9.4
-      - name: Install LWJGL 2.9.4
-        run: |
-          cd /tmp/maven-deps
-          
-          # Download LWJGL core
-          wget -q -O lwjgl-2.9.4.jar \
-            https://build.lwjgl.org/release/lwjgl/2.9.4/lwjgl-2.9.4.jar
-          
-          # Download LWJGL util
-          wget -q -O lwjgl_util-2.9.4.jar \
-            https://build.lwjgl.org/release/lwjgl/2.9.4/lwjgl_util-2.9.4.jar
-          
-          # Verify files exist
-          if [ ! -f lwjgl-2.9.4.jar ]; then
-            echo "::error::Failed to download LWJGL core JAR"
-            exit 1
-          fi
-          
-          if [ ! -f lwjgl_util-2.9.4.jar ]; then
-            echo "::error::Failed to download LWJGL util JAR"
-            exit 1
-          fi
-          
-          # Install LWJGL to local Maven repo
-          cd /tmp/maven-deps
-          mvn install:install-file \
-            -Dfile=lwjgl-2.9.4.jar \
-            -DgroupId=org.lwjgl.lwjgl \
-            -DartifactId=lwjgl \
-            -Dversion=2.9.4 \
-            -Dpackaging=jar
-          
-          mvn install:install-file \
-            -Dfile=lwjgl_util-2.9.4.jar \
-            -DgroupId=org.lwjgl.lwjgl \
-            -DartifactId=lwjgl_util \
-            -Dversion=2.9.4 \
-            -Dpackaging=jar
-      
-      - name: Install GSON 2.8.9
-        run: |
-          cd /tmp/maven-deps
-          
-          wget -q -O gson-2.8.9.jar \
-            https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.9/gson-2.8.9.jar
-          
-          if [ ! -f gson-2.8.9.jar ]; then
-            echo "::error::Failed to download GSON JAR"
-            exit 1
-          fi
-          
-          mvn install:install-file \
-            -Dfile=gson-2.8.9.jar \
-            -DgroupId=com.google.code.gson \
-            -DartifactId=gson \
-            -Dversion=2.8.9 \
-            -Dpackaging=jar
-      
-      - name: Install Mixins 0.8.5
-        run: |
-          cd /tmp/maven-deps
-          
-          wget -q -O mixin-0.8.5.jar \
-            https://repo.spongepowered.org/repository/maven-public/org/spongepowered/mixin/0.8.5/mixin-0.8.5.jar
-          
-          if [ ! -f mixin-0.8.5.jar ]; then
-            echo "::error::Failed to download Mixins JAR"
-            exit 1
-          fi
-          
-          mvn install:install-file \
-            -Dfile=mixin-0.8.5.jar \
-            -DgroupId=org.spongepowered \
-            -DartifactId=mixin \
-            -Dversion=0.8.5 \
-            -Dpackaging=jar
-      
-      # Install Minecraft 1.8.9 to local Maven repository
       - name: Install Minecraft 1.8.9
         run: |
-          cd /tmp/maven-deps
-          
-          # Download Minecraft 1.8.9 client JAR from official libraries
-          wget -q -O minecraft-1.8.9-client.jar \
-            https://libraries.minecraft.net/com/mojang/minecraft/1.8.9/minecraft-1.8.9-client.jar
-          
-          # Verify download was successful
+          cd /tmp
+          wget -q -O minecraft-1.8.9-client.jar https://launcher.mojang.com/v1/objects/725239f57282c2258c85d24515583d4154641661d478f56d876495343679484/minecraft-1.8.9-client.jar
           if [ ! -f minecraft-1.8.9-client.jar ]; then
-            echo "::error::Failed to download Minecraft 1.8.9 JAR"
+            echo "::error::Failed to download Minecraft 1.8.9"
             exit 1
           fi
-          
-          # Install to local Maven repo
-          mvn install:install-file \
+          mvn install:install-file -q \
             -Dfile=minecraft-1.8.9-client.jar \
             -DgroupId=com.mojang \
             -DartifactId=minecraft \
             -Dversion=1.8.9 \
-            -Dpackaging=jar \
-            -DgeneratePom=true
+            -Dpackaging=jar
       
       - name: Build with Maven
-        run: cd nova-client && mvn clean compile
-        
-      - name: Package JAR
-        run: cd nova-client && mvn package -DskipTests
+        run: cd nova-client && mvn clean package -DskipTests -q
         
       - name: List target contents
         run: ls -la nova-client/target/ || true
