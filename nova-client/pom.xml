@@ -18,7 +18,48 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Flag to skip Minecraft dependencies -->
+        <skipMinecraft>false</skipMinecraft>
     </properties>
+    
+    <profiles>
+        <!-- Profile to skip Minecraft dependencies -->
+        <profile>
+            <id>no-minecraft</id>
+            <activation>
+                <property>
+                    <name>skipMinecraft</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <skipMinecraft>true</skipMinecraft>
+            </properties>
+            <dependencies>
+                <!-- Only include public dependencies -->
+                <dependency>
+                    <groupId>org.lwjgl.lwjgl</groupId>
+                    <artifactId>lwjgl</artifactId>
+                    <version>2.9.4</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.lwjgl.lwjgl</groupId>
+                    <artifactId>lwjgl_util</artifactId>
+                    <version>2.9.4</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                    <version>2.8.9</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.spongepowered</groupId>
+                    <artifactId>mixin</artifactId>
+                    <version>0.8.5</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
     
     <repositories>
         <!-- SpongePowered Repository for Mixins -->
@@ -53,6 +94,14 @@
             <groupId>org.spongepowered</groupId>
             <artifactId>mixin</artifactId>
             <version>0.8.5</version>
+        </dependency>
+        
+        <!-- Minecraft 1.8.9 (only included when skipMinecraft is false) -->
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>minecraft</artifactId>
+            <version>1.8.9</version>
+            <scope>provided</scope>
         </dependency>
         
         <!-- JUnit for testing -->
@@ -120,28 +169,4 @@
             </resource>
         </resources>
     </build>
-    
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

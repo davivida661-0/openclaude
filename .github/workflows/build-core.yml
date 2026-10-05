@@ -1,0 +1,52 @@
+name: Build Nova Client Core (No Minecraft)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'nova-client/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'nova-client/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up JDK 8
+        uses: actions/setup-java@v5
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'maven'
+          
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('nova-client/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      
+      - name: Build Core with Maven (No Minecraft)
+        run: cd nova-client && mvn clean compile -DskipMinecraft=true
+        
+      - name: Package Core JAR
+        run: cd nova-client && mvn package -DskipTests -DskipMinecraft=true
+        
+      - name: List target contents
+        run: ls -la nova-client/target/ || true
+        
+      - name: Upload Core JAR artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: nova-client-core-jar
+          path: nova-client/target/*.jar
+          retention-days: 30
