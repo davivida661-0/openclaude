@@ -482,6 +482,121 @@ public class RenderUtils {
     }
     
     /**
+     * Desenha uma bounding box 3D
+     * 
+     * @param bb Bounding box a ser desenhada
+     * @param color Cor da box (ARGB)
+     */
+    public static void drawBox(net.minecraft.util.AxisAlignedBB bb, int color) {
+        if (bb == null) return;
+        
+        float alpha = (float) (color >> 24 & 255) / 255.0F;
+        float red = (float) (color >> 16 & 255) / 255.0F;
+        float green = (float) (color >> 8 & 255) / 255.0F;
+        float blue = (float) (color & 255) / 255.0F;
+        
+        GL11.glPushMatrix();
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glColor4f(red, green, blue, alpha);
+        
+        GL11.glBegin(GL11.GL_LINES);
+        
+        // Base inferior
+        GL11.glVertex3d(bb.minX, bb.minY, bb.minZ);
+        GL11.glVertex3d(bb.maxX, bb.minY, bb.minZ);
+        
+        GL11.glVertex3d(bb.maxX, bb.minY, bb.minZ);
+        GL11.glVertex3d(bb.maxX, bb.minY, bb.maxZ);
+        
+        GL11.glVertex3d(bb.maxX, bb.minY, bb.maxZ);
+        GL11.glVertex3d(bb.minX, bb.minY, bb.maxZ);
+        
+        GL11.glVertex3d(bb.minX, bb.minY, bb.maxZ);
+        GL11.glVertex3d(bb.minX, bb.minY, bb.minZ);
+        
+        // Base superior
+        GL11.glVertex3d(bb.minX, bb.maxY, bb.minZ);
+        GL11.glVertex3d(bb.maxX, bb.maxY, bb.minZ);
+        
+        GL11.glVertex3d(bb.maxX, bb.maxY, bb.minZ);
+        GL11.glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
+        
+        GL11.glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
+        GL11.glVertex3d(bb.minX, bb.maxY, bb.maxZ);
+        
+        GL11.glVertex3d(bb.minX, bb.maxY, bb.maxZ);
+        GL11.glVertex3d(bb.minX, bb.maxY, bb.minZ);
+        
+        // Linhas verticais
+        GL11.glVertex3d(bb.minX, bb.minY, bb.minZ);
+        GL11.glVertex3d(bb.minX, bb.maxY, bb.minZ);
+        
+        GL11.glVertex3d(bb.maxX, bb.minY, bb.minZ);
+        GL11.glVertex3d(bb.maxX, bb.maxY, bb.minZ);
+        
+        GL11.glVertex3d(bb.maxX, bb.minY, bb.maxZ);
+        GL11.glVertex3d(bb.maxX, bb.maxY, bb.maxZ);
+        
+        GL11.glVertex3d(bb.minX, bb.minY, bb.maxZ);
+        GL11.glVertex3d(bb.minX, bb.maxY, bb.maxZ);
+        
+        GL11.glEnd();
+        
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+        
+        GL11.glPopAttrib();
+        GL11.glPopMatrix();
+    }
+    
+    /**
+     * Desenha uma linha 3D
+     * 
+     * @param x1 Posição X inicial
+     * @param y1 Posição Y inicial
+     * @param z1 Posição Z inicial
+     * @param x2 Posição X final
+     * @param y2 Posição Y final
+     * @param z2 Posição Z final
+     * @param width Largura da linha
+     * @param color Cor da linha (ARGB)
+     */
+    public static void drawLine3D(float x1, float y1, float z1, float x2, float y2, float z2, float width, int color) {
+        float alpha = (float) (color >> 24 & 255) / 255.0F;
+        float red = (float) (color >> 16 & 255) / 255.0F;
+        float green = (float) (color >> 8 & 255) / 255.0F;
+        float blue = (float) (color & 255) / 255.0F;
+        
+        GL11.glPushMatrix();
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glColor4f(red, green, blue, alpha);
+        
+        GL11.glLineWidth(width);
+        GL11.glBegin(GL11.GL_LINES);
+        GL11.glVertex3f(x1, y1, z1);
+        GL11.glVertex3f(x2, y2, z2);
+        GL11.glEnd();
+        
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+        
+        GL11.glPopAttrib();
+        GL11.glPopMatrix();
+    }
+    
+    /**
      * Desenha um retângulo com textura
      * 
      * @param x Posição X
