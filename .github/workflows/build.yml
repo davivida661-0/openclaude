@@ -34,7 +34,7 @@ jobs:
             echo "::error::Failed to download Minecraft 1.8.9"
             exit 1
           fi
-          mvn install:install-file -q \
+          mvn install:install-file \
             -Dfile=minecraft-1.8.9-client.jar \
             -DgroupId=com.mojang \
             -DartifactId=minecraft \
@@ -42,7 +42,7 @@ jobs:
             -Dpackaging=jar
       
       - name: Build with Maven
-        run: cd nova-client && mvn clean package -DskipTests -q
+        run: cd nova-client && mvn clean package -DskipTests
         
       - name: List target contents
         run: ls -la nova-client/target/ || true
