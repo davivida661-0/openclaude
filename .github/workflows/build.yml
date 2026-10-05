@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Set up JDK 8
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '8'
           distribution: 'temurin'
@@ -39,9 +39,15 @@ jobs:
         run: |
           mkdir -p ~/.m2/repository/com/mojang/minecraft/1.8.9
           
-          # Download Minecraft 1.8.9 client JAR
+          # Download Minecraft 1.8.9 client JAR from official libraries
           wget -q -O /tmp/minecraft-1.8.9.jar \
-            https://launcher.mojang.com/v1/objects/725239f57282c2258c85d24515583d4154641661d478f56d876495343679484/minecraft-1.8.9-client.jar
+            https://libraries.minecraft.net/com/mojang/minecraft/1.8.9/minecraft-1.8.9-client.jar
+          
+          # Verify download was successful
+          if [ ! -f /tmp/minecraft-1.8.9.jar ]; then
+            echo "::error::Failed to download Minecraft 1.8.9 JAR"
+            exit 1
+          fi
           
           # Install to local Maven repo
           mvn install:install-file \
