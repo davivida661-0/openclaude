@@ -33,22 +33,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       
-      # Download Minecraft 1.8.9 libraries
-      - name: Download Minecraft 1.8.9 Libraries
+      # Install Minecraft 1.8.9 to local Maven repository
+      - name: Install Minecraft 1.8.9
         run: |
-          mkdir -p ~/.m2/repository/com/mojang
+          mkdir -p ~/.m2/repository/com/mojang/minecraft/1.8.9
           
-          # Minecraft client
-          wget -O ~/.m2/repository/com/mojang/minecraft/1.8.9/minecraft-1.8.9.jar \
+          # Download Minecraft 1.8.9 client JAR
+          wget -q -O /tmp/minecraft-1.8.9.jar \
             https://launcher.mojang.com/v1/objects/725239f57282c2258c85d24515583d4154641661d478f56d876495343679484/minecraft-1.8.9-client.jar
           
           # Install to local Maven repo
           mvn install:install-file \
-            -Dfile=~/.m2/repository/com/mojang/minecraft/1.8.9/minecraft-1.8.9.jar \
+            -Dfile=/tmp/minecraft-1.8.9.jar \
             -DgroupId=com.mojang \
             -DartifactId=minecraft \
             -Dversion=1.8.9 \
-            -Dpackaging=jar
+            -Dpackaging=jar \
+            -DgeneratePom=true
       
       - name: Build with Maven
         run: cd nova-client && mvn clean compile
