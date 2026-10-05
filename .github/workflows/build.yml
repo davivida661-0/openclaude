@@ -1,6 +1,7 @@
 name: Build Nova Client
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths:
