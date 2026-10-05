@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Set up JDK 8
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '8'
           distribution: 'temurin'
@@ -62,7 +62,7 @@ jobs:
         run: ls -la nova-client/target/ || true
         
       - name: Upload JAR artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: success()
         with:
           name: nova-client-jar
