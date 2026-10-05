@@ -43,6 +43,9 @@ jobs:
       - name: Package JAR
         run: cd nova-client && mvn package -DskipTests
         
+      - name: List target directory
+        run: ls -la nova-client/target/
+        
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v3
         with:
