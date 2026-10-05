@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "package": "com.novaclient.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinEntityPlayerSP",
+    "MixinEntityRenderer",
+    "MixinMinecraft",
+    "MixinRenderManager",
+    "MixinGuiIngame",
+    "MixinGuiMainMenu",
+    "MixinNetHandlerPlayClient",
+    "MixinWorldClient"
+  ],
+  "client": [
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
