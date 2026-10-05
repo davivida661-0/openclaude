@@ -28,6 +28,7 @@ jobs:
       
       - name: Install Minecraft 1.8.9
         run: |
+          set -e
           cd /tmp
           wget -q -O minecraft-1.8.9-client.jar https://launcher.mojang.com/v1/objects/725239f57282c2258c85d24515583d4154641661d478f56d876495343679484/minecraft-1.8.9-client.jar
           if [ ! -f minecraft-1.8.9-client.jar ]; then
@@ -39,7 +40,8 @@ jobs:
             -DgroupId=com.mojang \
             -DartifactId=minecraft \
             -Dversion=1.8.9 \
-            -Dpackaging=jar
+            -Dpackaging=jar \
+            -DgeneratePom=true
       
       - name: Build with Maven
         run: cd nova-client && mvn clean package -DskipTests
